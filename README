@@ -18,6 +18,10 @@ We'll need to generate the model and migration for your friendship table.
 
    script/generate hmf_friendship_model Friendship
    rake db:migrate
+   
+If you will be running tests, you may need to prepare your test database again.
+
+   rake db:test:prepate
 
 You should be just about set! All you need to do is add the following method
 to your User model.

@@ -1,5 +1,11 @@
-# TODO : Add fixture data here for tests.
-first:
+hmf_first_relationship:
   id: 1
-another:
+  user_id: 1
+  friend_id: 2
+  created_at: <%%= 5.days.ago %>
+  accepted_at: <%%= 3.days.ago %>
+hmf_another_relationship:
   id: 2
+  user_id: 3
+  friend_id: 1
+  created_at: <%% 4.days.ago %>
