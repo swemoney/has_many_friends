@@ -1,13 +1,65 @@
 HasManyFriends
 ==============
-
-Introduction goes here.
-
-
-Example
-=======
-
-Example goes here.
+has_many_friends is a plugin based off of the friendship_plugin that can be found
+here (http://svn.webwideconsulting.com/svn/friendship_plugin/). This version of the
+plugin adds some features I wanted as well as eliminates the need for 2 friendship
+rows created in the table. The goal is to make it relatively seamless for anyone to
+create a fully functional friends system for their application.
 
 
-Copyright (c) 2007 [name of plugin creator], released under the MIT license
+Setup
+=====
+To use this plugin, you will first need to install it. This can be done quite simply
+with the following command.
+
+   script/plugin install http://dnite.org/svn/has_many_friends
+
+We'll need to generate the model and migration for your friendship table.
+
+   script/generate hmf_friendship_model Friendship
+   rake db:migrate
+
+You should be just about set! All you need to do is add the following method
+to your User model.
+
+   class User < ActiveRecord::Base
+     has_many_friends
+     # the rest of your user model ...
+     # ...
+   end
+
+
+Usage
+=====
+After the plugin is installed. All of these super cool methods will be attached to 
+any user.
+
+These methods are the actual associations. They return what you'd expect.
+   user.friends_for_me
+   user.friends_by_me
+   user.pending_friends_for_me
+   user.pending_friends_by_me
+
+Again, these will return what you would expect them to return.
+   user.friends
+   user.pending_friends
+   user.pending_or_accepted_friends
+
+Returns true if user is friends with friend.
+   user.is_friends_with? friend
+   user.is_pending_friends_with? friend
+   user.id_friends_or_pending_with? friend
+
+Creates, deletes or updates friendship requests.
+   user.request_friendship_with friend
+   user.delete_friendship_with friend
+   user.accept_friendship_with friend
+
+Bypass the request and just make a friend.
+   user.become_friends_with! friend
+
+Returns the friendship object (good for looking up extra attributes about
+the friendship, like when it was accepted and such.
+   user.friendship friend
+
+Copyright (c) 2007 Steve Ehrenberg, released under the MIT license

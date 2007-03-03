@@ -1,0 +1,5 @@
+# TODO : Add fixture data here for tests.
+first:
+  id: 1
+another:
+  id: 2

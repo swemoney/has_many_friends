@@ -1,0 +1,21 @@
+Description:
+    hmf_friendship_generator will create a model and migration for a 
+    self-referencial friends system. Currently, you MUST pass the model
+    name as 'Friendship'. This may change in the future. 
+    
+    This generator will also produce unit tests and fixtures. To make
+    the best tests possible, the fixtures will be looking for at least
+    3 users from your user model. Feel free to edit this to your liking.
+
+
+Example:
+    ./script/generate friendship_model Friendship
+
+    This will create a model, migration, unit_test and fixture:
+        Model:      app/models/friendship.rb
+        Test:       test/unit/friendship_test.rb
+        Fixtures:   test/fixtures/friendships.yml
+        Migration:  db/migrate/XXX_add_friendships.rb
+        
+    You should then run "rake db:migrate".
+
