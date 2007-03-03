@@ -1,5 +1,5 @@
-HasManyFriends
-==============
+HasManyFriends - Steve Ehrenberg - http://dnite.org
+===================================================
 has_many_friends is a plugin based off of the friendship_plugin that can be found
 here (http://svn.webwideconsulting.com/svn/friendship_plugin/). This version of the
 plugin adds some features I wanted as well as eliminates the need for 2 friendship
