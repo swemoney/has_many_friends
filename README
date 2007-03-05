@@ -12,7 +12,7 @@ Setup
 To use this plugin, you will first need to install it. This can be done quite simply
 with the following command.
 
-   script/plugin install http://dnite.org/svn/has_many_friends
+   script/plugin install http://svn.dnite.org/has_many_friends
 
 We'll need to generate the model and migration for your friendship table.
 
