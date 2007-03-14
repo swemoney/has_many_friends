@@ -18,7 +18,7 @@ module HasManyFriends
         
         has_many :friends_by_me,
                  :through => :friendships_by_me,
-                 :source => :friendshipped_by_me,
+                 :source => :friendshipped_for_me,
                  :conditions => 'accepted_at IS NOT NULL' do
                   def online
                     find(:all, :conditions => ['status <> ? AND updated_at > ?', 'offline', 65.seconds.ago]) if options[:online_method]
@@ -27,7 +27,7 @@ module HasManyFriends
         
         has_many :friends_for_me,
                  :through => :friendships_for_me,
-                 :source => :friendshipped_for_me,
+                 :source => :friendshipped_by_me,
                  :conditions => 'accepted_at IS NOT NULL' do
                   def online
                     find(:all, :conditions => ['status <> ? AND updated_at > ?', 'offline', 65.seconds.ago]) if options[:online_method]
@@ -36,12 +36,12 @@ module HasManyFriends
         
         has_many :pending_friends_by_me,
                  :through => :friendships_by_me,
-                 :source => :friendshipped_by_me,
+                 :source => :friendshipped_for_me,
                  :conditions => 'accepted_at IS NULL'
         
         has_many :pending_friends_for_me,
                  :through => :friendships_for_me,
-                 :source => :friendshipped_for_me,
+                 :source => :friendshipped_by_me,
                  :conditions => 'accepted_at IS NULL'
         
         include HasManyFriends::UserExtensions::InstanceMethods
@@ -59,12 +59,12 @@ module HasManyFriends
       # This won't return anything unless you passed the :online_method
       # option to has_many_friends.
       def online_friends
-        self.friends_from_me.online + self.friends_for_me.online
+        self.friends_by_me.online + self.friends_for_me.online
       end
       
       # Returns a list of all pending friendships.
       def pending_friends
-        self.pending_friends_from_me + self.pending_friends_for_me
+        self.pending_friends_by_me + self.pending_friends_for_me
       end
       
       # Returns a full list of all pending and accepted friends.
@@ -80,26 +80,27 @@ module HasManyFriends
       
       # Accepts a user object and returns true if both users are
       # friends and the friendship has been accepted.
-      def is_friends_with?(friend)
+      def friends_with?(friend)
         self.friends.include? friend
       end
       
       # Accepts a user object and returns true if both users are
       # friends but the friendship hasn't been accepted yet.
-      def is_pending_friends_with?(friend)
+      def pending_friends_with?(friend)
         self.pending_friends.include? friend
       end
       
       # Accepts a user object and returns true if both users are
       # friends regardless of acceptance.
-      def is_friends_or_pending_with?(friend)
+      def friends_or_pending_with?(friend)
         self.pending_or_accepted_friends.include? friend
       end
       
       # Accepts a user object and creates a friendship request
       # between both users.
       def request_friendship_with(friend)
-        Friendship.create!(:friendshipped => self, :befriendshipped => friend)
+        Friendship.create!(:friendshipped_by_me => self, 
+                           :friendshipped_for_me => friend) unless self.friends_or_pending_with?(friend) || self == friend
       end
       
       # Accepts a user object and updates an existing friendship to
@@ -110,19 +111,19 @@ module HasManyFriends
       
       # Accepts a user object and deletes a friendship between both 
       # users.
-      def delete_friendship_with(friend)
-        self.friendship(friend).destroy
+      def destroy_friendship_with(friend)
+        self.friendship(friend).destroy if self.friends_or_pending_with?(friend)
       end
       
       # Accepts a user object and creates a friendship between both 
       # users. This method bypasses the request stage and makes both
       # users friends without needing to be accepted.
-      def become_friends_with!(friend)
-        unless self.is_friends_with? friend
-          unless self.is_pending_friends_with? friend
-            Friendship.create( :friendshipped => self, :befriendshipped => friend, :accepted_at => Time.now )
+      def become_friends_with(friend)
+        unless self.friends_with? friend
+          unless self.pending_friends_with? friend
+            Friendship.create!(:friendshipped_by_me => self, :friendshipped_for_me => friend, :accepted_at => Time.now)
           else
-            self.friendship(friend).update_attributes(:accepted_at, Time.now)
+            self.friendship(friend).update_attribute(:accepted_at, Time.now)
           end
         else
           self.friendship(friend)
