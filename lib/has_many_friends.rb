@@ -80,19 +80,19 @@ module HasManyFriends
       
       # Accepts a user object and returns true if both users are
       # friends and the friendship has been accepted.
-      def friends_with?(friend)
+      def is_friends_with?(friend)
         self.friends.include? friend
       end
       
       # Accepts a user object and returns true if both users are
       # friends but the friendship hasn't been accepted yet.
-      def pending_friends_with?(friend)
+      def is_pending_friends_with?(friend)
         self.pending_friends.include? friend
       end
       
       # Accepts a user object and returns true if both users are
       # friends regardless of acceptance.
-      def friends_or_pending_with?(friend)
+      def is_friends_or_pending_with?(friend)
         self.pending_or_accepted_friends.include? friend
       end
       
