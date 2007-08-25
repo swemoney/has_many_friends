@@ -49,10 +49,14 @@ Again, these will return what you would expect them to return.
    user.pending_friends
    user.pending_or_accepted_friends
 
+## The following 3 methods were changed as of revision 8. They have been listed here
+## as these methods, but for some reason, i never changed their names in the actual
+## plugin file. If your using a pre-8 version and things broke for you, use the new
+## method names in your application. Sorry for the inconvenience.
 Returns true if user is friends with friend.
    user.is_friends_with? friend
    user.is_pending_friends_with? friend
-   user.id_friends_or_pending_with? friend
+   user.is_friends_or_pending_with? friend
 
 Creates, deletes or updates friendship requests.
    user.request_friendship_with friend
