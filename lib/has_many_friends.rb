@@ -81,26 +81,26 @@ module HasManyFriends
       # Accepts a user object and returns true if both users are
       # friends and the friendship has been accepted.
       def is_friends_with?(friend)
-        self.friends.include? friend
+        self.friends.include?(friend)
       end
       
       # Accepts a user object and returns true if both users are
       # friends but the friendship hasn't been accepted yet.
       def is_pending_friends_with?(friend)
-        self.pending_friends.include? friend
+        self.pending_friends.include?(friend)
       end
       
       # Accepts a user object and returns true if both users are
       # friends regardless of acceptance.
       def is_friends_or_pending_with?(friend)
-        self.pending_or_accepted_friends.include? friend
+        self.pending_or_accepted_friends.include?(friend)
       end
       
       # Accepts a user object and creates a friendship request
       # between both users.
       def request_friendship_with(friend)
         Friendship.create!(:friendshipped_by_me => self, 
-                           :friendshipped_for_me => friend) unless self.friends_or_pending_with?(friend) || self == friend
+                           :friendshipped_for_me => friend) unless self.is_friends_or_pending_with?(friend) || self == friend
       end
       
       # Accepts a user object and updates an existing friendship to
@@ -111,16 +111,16 @@ module HasManyFriends
       
       # Accepts a user object and deletes a friendship between both 
       # users.
-      def destroy_friendship_with(friend)
-        self.friendship(friend).destroy if self.friends_or_pending_with?(friend)
+      def delete_friendship_with(friend)
+        self.friendship(friend).destroy if self.is_friends_or_pending_with?(friend)
       end
       
       # Accepts a user object and creates a friendship between both 
       # users. This method bypasses the request stage and makes both
       # users friends without needing to be accepted.
       def become_friends_with(friend)
-        unless self.friends_with? friend
-          unless self.pending_friends_with? friend
+        unless self.is_friends_with?(friend)
+          unless self.is_pending_friends_with?(friend)
             Friendship.create!(:friendshipped_by_me => self, :friendshipped_for_me => friend, :accepted_at => Time.now)
           else
             self.friendship(friend).update_attribute(:accepted_at, Time.now)
